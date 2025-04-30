@@ -1,0 +1,42 @@
+.tableBlock{
+    display: inline-block;
+     width: 70%;
+}
+.tableHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tableBlock > table > tr > th {
+    font-weight: 100;
+}
+.tableBlock > table {
+    width: 100%;
+    height: 100%;
+}
+.tableBlock > table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.timetableGrid {
+   display: grid;
+   grid-template-columns: 60px repeat(7, 1fr);
+   grid-auto-rows: 50px;
+   border: 1px solid #ccc;
+ }
+
+ .cell {
+   border: 1px solid #ddd;
+   text-align: center;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+ }
+
+ .timeCell {
+   border: 1px solid #ddd;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+ }
