@@ -2,7 +2,7 @@ import {useState} from "react";
 
 export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
     const [form, setForm] = useState({subject: "", instructor: "", times: []});
-    const [timeInput, setTimeInput] = useState({day: "", startTime: "", endTime: ""});
+    const [timeInput, setTimeInput] = useState({day: "", startTime: "", endTime: "", loca:""});
 
     const addTimeToForm = () => {
         if(!timeInput.day || !timeInput.startTime || !timeInput.endTime) return;
@@ -12,10 +12,10 @@ export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
             times: [...form.times, timeInput]
         });
 
-        setTimeInput({day: '', startTime: '', endTime: ''});
+        setTimeInput({day: '', startTime: '', endTime: '', loca: ''});
     }
     const handleSubmit = (event) => {
-        if(!form.subject || form.times.length === 0) return;
+        if(!form.subject) return;
 
         const newItem = {
             subject: form.subject,
@@ -67,24 +67,32 @@ export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
                      <div>
                         <ul style={{listStyle: "none", padding:0}}>
                             {form.times.map((time, index) => (
-                                <li key={index} style={{backgroundColor: "lightgray",
-                                                        }}>
-                                    {time.day} {time.startTime} ~ {time.endTime}
+                                <li key={index} style={{backgroundColor: "lightgray"}}>
+                                    {time.day} {time.startTime} ~ {time.endTime} {time.loca}
                                 </li>
                             ))}
                         </ul>
                      </div>
-                     <select value={timeInput.day} onChange={(e) => setTimeInput({...timeInput, day: e.target.value})}>
-                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
-                            <option key={d} value={d}>{d}</option>
-                        ))}
-                     </select>
-                     <input type="time" value={timeInput.startTime}
-                     onChange={(e) => setTimeInput({...timeInput, startTime: e.target.value})} />
-                     ~
-                     <input type="time" value={timeInput.endTime}
-                                          onChange={(e) => setTimeInput({...timeInput, endTime: e.target.value})} />
-                     <button onClick={addTimeToForm}>ADD</button>
+                     <div style={{border:"solid black 1px",
+                                  padding: "10px",
+                                  borderRadius: "10px"}}>
+                            <select value={timeInput.day} onChange={(e) => setTimeInput({...timeInput, day: e.target.value})}>
+                                    <option value="" selected disabled hidden>요일</option>
+                                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
+                                        <option key={d} value={d}>{d}</option>
+                                    ))}
+                            </select>
+                            <input type="time" value={timeInput.startTime}
+                                 onChange={(e) => setTimeInput({...timeInput, startTime: e.target.value})} />
+                            ~
+                            <input type="time" value={timeInput.endTime}
+                                   onChange={(e) => setTimeInput({...timeInput, endTime: e.target.value})} />
+                            <input type="text" value={timeInput.loca}
+                                   onChange={(e) => setTimeInput({...timeInput, loca: e.target.value})} placeholder="장소/메모"/>
+                            <button onClick={addTimeToForm}>ADD</button>
+                     </div>
+
+                     <br/>
                      <button onClick={handleSubmit}>submit</button>
                 </div>
 
