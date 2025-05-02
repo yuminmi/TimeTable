@@ -1,5 +1,6 @@
 import TimeTable from "./TimeTable";
 import SemesterList from "./SemesterList";
+import SubjectList from "./SubjectList";
 import AddTimeTable from "./AddTimeTable";
 import {useState} from "react";
 
@@ -11,8 +12,11 @@ const closeModal = () => setIsModalOpen(false);
     return (
         <div style={{display:"flex", padding:"210px"}}>
             <SemesterList />
-            <TimeTable />
+            <SubjectList />
+            <div>
             <button onClick={openModal}>+</button>
+            </div>
+            <TimeTable />
             <AddTimeTable isOpen={isModalOpen} closeModal={closeModal}/>
         </div>
     );
