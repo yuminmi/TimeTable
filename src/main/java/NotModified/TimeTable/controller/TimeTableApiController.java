@@ -22,7 +22,7 @@ public class TimeTableApiController {
     private final CourseService courseService;
     private final TimeTableDetailService timeTableDetailService;
 
-    @PostMapping("timetable/")
+    @PostMapping("/timetable")
     public ResponseEntity<?> createTimeTable(@RequestBody TimeTableRequestDto request) {
         timeTableService.saveTimeTable(request);
         return ResponseEntity.ok(Map.of(
