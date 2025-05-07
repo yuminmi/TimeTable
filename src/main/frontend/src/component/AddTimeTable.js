@@ -25,8 +25,6 @@ export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
         event.preventDefault();
 
         onAdd(newItem);
-
-        alert(`${form.subject}가 등록되었습니다.`);
     }
     return (
         <div style={{display:isOpen?"block": "none",
@@ -62,7 +60,8 @@ export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
                      <input type="text" value={form.subject}
                             onChange={(e) => setForm({ ...form, subject: e.target.value})}></input>
                      <p>teacher : </p>
-                     <input type="text"></input>
+                     <input type="text" value={form.instructor}
+                            onChange={(e) => setForm({ ...form, instructor: e.target.value})}></input>
                      <br />
                      <div>
                         <ul style={{listStyle: "none", padding:0}}>
