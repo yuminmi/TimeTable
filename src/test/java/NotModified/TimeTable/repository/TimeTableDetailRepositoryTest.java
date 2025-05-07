@@ -47,8 +47,8 @@ public class TimeTableDetailRepositoryTest {
                 .course(course)
                 .weekday(2)
                 .location("60주년")
-                .start_time(LocalTime.of(13, 0))
-                .end_time(LocalTime.of(14, 30))
+                .startTime(LocalTime.of(13, 0))
+                .endTime(LocalTime.of(14, 30))
                 .build();
         timeTableDetailRepository.save(td);
 
