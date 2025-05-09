@@ -9,10 +9,9 @@ import NotModified.TimeTable.service.TimeTableDetailService;
 import NotModified.TimeTable.service.TimeTableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,6 +21,7 @@ public class TimeTableApiController {
     private final CourseService courseService;
     private final TimeTableDetailService timeTableDetailService;
 
+    // 시간표 생성
     @PostMapping("/timetable")
     public ResponseEntity<?> createTimeTable(@RequestBody TimeTableRequestDto request) {
         timeTableService.saveTimeTable(request);
@@ -32,6 +32,12 @@ public class TimeTableApiController {
         );
     }
 
+    // 유저의 시간표 목록 조회
+    @GetMapping("/timetable/{userId}")
+    public List<TimeTable> getAllTimeTables(@PathVariable("userId") String userId) {
+        return timeTableService.findTimeTableList(userId);
+    }
+    
     @PostMapping("/timetable/detail")
     public ResponseEntity<?> createTimeTableDetail(@RequestBody TimeTableWithCourseRequestDto request) {
         Long timeTableId = request.getTableDetailDto().getTimeTableId();
