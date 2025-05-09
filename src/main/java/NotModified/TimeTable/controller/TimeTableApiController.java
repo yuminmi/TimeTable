@@ -3,6 +3,7 @@ package NotModified.TimeTable.controller;
 import NotModified.TimeTable.domain.Course;
 import NotModified.TimeTable.domain.TimeTable;
 import NotModified.TimeTable.dto.timeTable.TimeTableRequestDto;
+import NotModified.TimeTable.dto.timeTable.TimeTableResponseDto;
 import NotModified.TimeTable.dto.timeTableWithCourse.TimeTableWithCourseRequestDto;
 import NotModified.TimeTable.service.CourseService;
 import NotModified.TimeTable.service.TimeTableDetailService;
@@ -34,8 +35,13 @@ public class TimeTableApiController {
 
     // 유저의 시간표 목록 조회
     @GetMapping("/timetable/{userId}")
-    public List<TimeTable> getAllTimeTables(@PathVariable("userId") String userId) {
-        return timeTableService.findTimeTableList(userId);
+    public ResponseEntity<?> getAllTimeTables(@PathVariable("userId") String userId) {
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "timeTable 조회 성공",
+                "data", timeTableService.findTimeTableList(userId)
+                )
+        );
     }
     
     @PostMapping("/timetable/detail")

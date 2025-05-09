@@ -30,4 +30,13 @@ public class JpaTimeTableDetailRepository implements TimeTableDetailRepository {
                                 .setParameter("timeTableId", timeTableId)
                                 .getResultList();
     }
+
+    @Override
+    public List<TimeTableDetail> findByWeekDay(Long timeTableId, int weekday) {
+        return em.createQuery("select td from TimeTableDetail td " +
+                                "where td.timeTable.id = :timeTableId and td.weekday = :weekday", TimeTableDetail.class)
+                .setParameter("timeTableId", timeTableId)
+                .setParameter("weekday", weekday)
+                .getResultList();
+    }
 }
