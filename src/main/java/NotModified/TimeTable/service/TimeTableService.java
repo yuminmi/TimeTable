@@ -2,12 +2,14 @@ package NotModified.TimeTable.service;
 
 import NotModified.TimeTable.domain.TimeTable;
 import NotModified.TimeTable.dto.timeTable.TimeTableRequestDto;
+import NotModified.TimeTable.dto.timeTable.TimeTableResponseDto;
 import NotModified.TimeTable.repository.interfaces.TimeTableRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -36,7 +38,11 @@ public class TimeTableService {
         );
     }
     
-    public List<TimeTable> findTimeTableList(String userId) {
-        return timeTableRepository.findAll(userId);
+    public List<TimeTableResponseDto> findTimeTableList(String userId) {
+        // TimeTable domain -> TimeTableResponseDto
+        return timeTableRepository.findAll(userId)
+                .stream()
+                .map(TimeTableResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

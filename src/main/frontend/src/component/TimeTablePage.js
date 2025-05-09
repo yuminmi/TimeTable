@@ -27,7 +27,7 @@ export default function TimeTablePage() {
             try {
                 const response = await axios.post('/api/timetable', {
                     userId: userName,
-                    name: tableName
+                    name: newTableName
                 });
                 console.log("서버 응답:", response.data);
                 alert("semester 저장 완료");
@@ -44,13 +44,15 @@ export default function TimeTablePage() {
                 try {
                     const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(newItem.times[0].day);
                     const response = await axios.post('/api/timetable/detail', {
-                        "TimeTableDetailRequestDto": {
+                        tableDetailDto: {
+                            // ************************* //
+                            timeTableId: 34,
                             weekday: dayIndex,
                             location: newItem.times[0].loca,
                             startTime: newItem.times[0].startTime,
                             endTime: newItem.times[0].endTime
                         },
-                        "CourseRequestDto": {
+                        courseDto: {
                             userId: userName,
                             title: newItem.subject,
                             instructor: newItem.instructor,
@@ -71,7 +73,7 @@ export default function TimeTablePage() {
 
     return (
         <div style={{display:"flex", padding:"210px"}}>
-            <input type="text" onChange={setUserName} />
+            <input type="text"  onChange={(e) => setUserName(e.target.value)} />
             <div>
             <button onClick={openTableModal}>+</button> // semester 추가버튼
             </div>
