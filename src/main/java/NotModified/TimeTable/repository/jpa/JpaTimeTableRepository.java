@@ -36,5 +36,13 @@ public class JpaTimeTableRepository implements TimeTableRepository {
         TimeTable timeTable = em.find(TimeTable.class, id);
         return Optional.ofNullable(timeTable);
     }
+
+    @Override
+    public Boolean findIsMain(Boolean isMain) {
+        return em.createQuery("select t from TimeTable t where t.isMain = :isMain", TimeTable.class)
+                .setParameter("isMain", isMain)
+                .getSingleResult()
+                .getIsMain();
+    }
 }
 
