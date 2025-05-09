@@ -24,13 +24,15 @@ export default function TimeTablePage() {
         setTimetable([...timetable, newItem]);
         const fetchTimeTableDetail = async () => {
                 try {
+                    const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(newItem.times.day);
                     const response = await axios.post('/api/timetable/detail', {
-                        timeTableId: ,
-                        courseId: ,
-                        weekday: ,
-                        location: ,
-                        startTime: ,
-                        endTime:
+                        userId: userName,
+                        title: newItem.subject,
+                        instructor: newItem.instructor,
+                        weekday: dayIndex,
+                        location: newItem.times.loca,
+                        startTime: newItem.times.startTime,
+                        endTime: newItem.times.endTime
                     });
                     setAllTodos(response.data);
                 } catch (e) {
