@@ -7,7 +7,8 @@ import {useState} from "react";
 import axios from "axios";
 
 export default function TimeTablePage() {
-    const [userName, setUserName] = useState('');
+    const [userName, setUserName] = useState("");
+    const [tableName, setTableName] = useState("");
     const [timetable, setTimetable] = useState([]);
     /* 시간표 추가 버튼 */
     const [isTableModalOpen, setIsTableModalOpen] = useState(false);
@@ -19,6 +20,24 @@ export default function TimeTablePage() {
     const [isSubModalOpen, setIsSubModalOpen] = useState(false);
     const openSubModal = () => setIsSubModalOpen(true);
     const closeSubModal = () => setIsSubModalOpen(false);
+    const handleAddTable = (newTableName) => {
+        console.log("전달받은 테이블 이름:", newTableName, typeof newTableName);
+        setTableName(newTableName);
+        const fetchTimeTable = async () => {
+            try {
+                const response = await axios.post('/api/timetable', {
+                    userId: userName,
+                    name: tableName
+                });
+                console.log("서버 응답:", response.data);
+                alert("semester 저장 완료");
+            } catch (e) {
+                console.error("fail fetch: ", e);
+                alert("semester 저장 실패");
+            }
+        };
+        fetchTimeTable();
+    }
     const handleAddItem = (newItem) => {
         setTimetable([...timetable, newItem]);
         const fetchTimeTableDetail = async () => {
@@ -26,16 +45,16 @@ export default function TimeTablePage() {
                     const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(newItem.times[0].day);
                     const response = await axios.post('/api/timetable/detail', {
                         "TimeTableDetailRequestDto": {
-                            "weekday": dayIndex,
-                            "location": newItem.times[0].loca,
-                            "startTime": newItem.times[0].startTime,
-                            "endTime": newItem.times[0].endTime
+                            weekday: dayIndex,
+                            location: newItem.times[0].loca,
+                            startTime: newItem.times[0].startTime,
+                            endTime: newItem.times[0].endTime
                         },
                         "CourseRequestDto": {
-                            "userId": userName,
-                            "title": newItem.subject,
-                            "instructor": newItem.instructor,
-                            "color": "#add8e6"
+                            userId: userName,
+                            title: newItem.subject,
+                            instructor: newItem.instructor,
+                            color: "#add8e6"
                         }
                     });
                     console.log("서버 응답:", response.data);
@@ -45,6 +64,7 @@ export default function TimeTablePage() {
                     alert("시간표 저장 실패");
                 }
         };
+        fetchTimeTableDetail();
         setIsSubModalOpen(false);
         alert(`${newItem.subject}가 등록되었습니다.`);
     }
@@ -56,7 +76,7 @@ export default function TimeTablePage() {
             <button onClick={openTableModal}>+</button> // semester 추가버튼
             </div>
             <SemesterList />
-            <AddTable isOpen={isTableModalOpen} closeModal={closeTableModal} />
+            <AddTable isOpen={isTableModalOpen} closeModal={closeTableModal} onAdd={handleAddTable}/>
             <SubjectList />
             <div>
             <button onClick={openSubModal}>+</button> // subject 추가버튼
