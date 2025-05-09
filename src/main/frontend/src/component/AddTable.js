@@ -1,30 +1,14 @@
 import {useState} from "react";
 
 export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
-    const [form, setForm] = useState({subject: "", instructor: "", times: []});
-    const [timeInput, setTimeInput] = useState({day: "", startTime: "", endTime: "", loca:""});
+    const [tableName, setTableName] = useState("");
 
-    const addTimeToForm = () => {
-        if(!timeInput.day || !timeInput.startTime || !timeInput.endTime) return;
-
-        setForm({
-            ...form,
-            times: [...form.times, timeInput]
-        });
-
-        setTimeInput({day: '', startTime: '', endTime: '', loca: ''});
-    }
     const handleSubmit = (event) => {
-        if(!form.subject) return;
+        if(!tableName) return;
 
-        const newItem = {
-            subject: form.subject,
-            instructor: form.instructor,
-            times: form.times
-        }
         event.preventDefault();
 
-        onAdd(newItem);
+        onAdd(tableName);
     }
     return (
         <div style={{display:isOpen?"block": "none",
@@ -57,8 +41,8 @@ export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
                     </div>
                      <hr/>
                      <p>table name : </p>
-                     <input type="text" value={form.subject}
-                            onChange={(e) => setForm({ ...form, subject: e.target.value})}></input>
+                     <input type="text" value={tableName}
+                            onChange={(e) => setTableName(e.target.value)}></input>
                      <br/>
                      <button onClick={handleSubmit}>submit</button>
                 </div>
