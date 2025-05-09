@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -19,6 +21,12 @@ public class TimeTableService {
                 .name(dto.getName())
                 .isMain(dto.getIsMain())
                 .build();
+
+        // isMain이 존재하는지 먼저 확인하고, 없으면 지금 추가하는 걸 isMain으로 설정
+        Boolean isMainExist = timeTableRepository.findIsMain(true);
+        if(!isMainExist)
+            timeTable.setIsMain(true);
+
         timeTableRepository.save(timeTable);
     }
 
@@ -26,5 +34,9 @@ public class TimeTableService {
         return timeTableRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 시간표입니다.")
         );
+    }
+    
+    public List<TimeTable> findTimeTableList(String userId) {
+        return timeTableRepository.findAll(userId);
     }
 }
