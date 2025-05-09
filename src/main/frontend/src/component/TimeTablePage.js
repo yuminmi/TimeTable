@@ -25,19 +25,17 @@ export default function TimeTablePage() {
                 try {
                     const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(newItem.times[0].day);
                     const response = await axios.post('/api/timetable/detail', {
-                        "TimeTableWithCourseRequestDto": {
-                            "TimeTableDetailRequestDto": {
-                                weekday: dayIndex,
-                                location: newItem.times[0].loca,
-                                startTime: newItem.times[0].startTime,
-                                endTime: newItem.times[0].endTime
-                            },
-                            "CourseRequestDto": {
-                                userId: userName,
-                                title: newItem.subject,
-                                instructor: newItem.instructor,
-                                color: "#add8e6"
-                            }
+                        "TimeTableDetailRequestDto": {
+                            "weekday": dayIndex,
+                            "location": newItem.times[0].loca,
+                            "startTime": newItem.times[0].startTime,
+                            "endTime": newItem.times[0].endTime
+                        },
+                        "CourseRequestDto": {
+                            "userId": userName,
+                            "title": newItem.subject,
+                            "instructor": newItem.instructor,
+                            "color": "#add8e6"
                         }
                     });
                     console.log("서버 응답:", response.data);
