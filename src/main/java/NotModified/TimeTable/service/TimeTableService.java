@@ -1,6 +1,7 @@
 package NotModified.TimeTable.service;
 
 import NotModified.TimeTable.domain.TimeTable;
+import NotModified.TimeTable.domain.TimeTableDetail;
 import NotModified.TimeTable.dto.timeTable.TimeTableRequestDto;
 import NotModified.TimeTable.dto.timeTable.TimeTableResponseDto;
 import NotModified.TimeTable.dto.timeTable.TimeTableUpdateDto;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TimeTableService {
     private final TimeTableRepository timeTableRepository;
+    private final TimeTableDetailService timeTableDetailService;
+    private final CourseService courseService;
 
     // 특정 id에 해당하는 시간표 리턴
     public TimeTable findTimeTable(Long id) {
@@ -67,8 +71,26 @@ public class TimeTableService {
     }
 
     // 시간표 삭제
+    // fix: 해당 시간표 밑에 있던 모든 세부시간표 및 강좌(cascade x)를 삭제 해야함
+    // fix: 삭제 후에 main 인 애가 없으면 얘로 업데이트
     public void deleteTimeTable(Long id) {
         TimeTable timeTable = findTimeTable(id);
+
+        // 해당 시간표에 속한 세부 시간표 목록 가져오기
+        List<TimeTableDetail> details = timeTableDetailService.findAllTImeTableDetails(id);
+        
+        // 세부 시간표가 속한 courses 가져오기
+        // set: distinct 하게 가져옴
+        Set<Long> courseIds = details.stream()
+                .map(detail -> detail.getCourse().getId())
+                .collect(Collectors.toSet());
+
         timeTableRepository.delete(timeTable);
+
+        for(Long courseId : courseIds) {
+            courseService.deleteCourse(courseId);
+        }
+
+
     }
 }

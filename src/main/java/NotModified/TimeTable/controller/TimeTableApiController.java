@@ -3,10 +3,9 @@ package NotModified.TimeTable.controller;
 import NotModified.TimeTable.domain.Course;
 import NotModified.TimeTable.domain.TimeTable;
 import NotModified.TimeTable.dto.timeTable.TimeTableRequestDto;
-import NotModified.TimeTable.dto.timeTable.TimeTableResponseDto;
 import NotModified.TimeTable.dto.timeTable.TimeTableUpdateDto;
 import NotModified.TimeTable.dto.timeTableWithCourse.TimeTableWithCourseRequestDto;
-import NotModified.TimeTable.dto.timeTableWithCourse.TimeTableWithCourseResponseDto;
+import NotModified.TimeTable.dto.timeTableWithCourse.TimeTableWithCourseUpdateDto;
 import NotModified.TimeTable.service.CourseService;
 import NotModified.TimeTable.service.TimeTableDetailService;
 import NotModified.TimeTable.service.TimeTableService;
@@ -103,9 +102,9 @@ public class TimeTableApiController {
     // 세부 시간표 수정 : course 정보 수정 주의 (title, instructor, color)
     // TimeTableDetailUpdateDto, CourseUpdateDto
     @PutMapping("/timetable/detail")
-    public ResponseEntity<?> updateTimeTableDetail(@RequestBody TimeTableWithCourseRequestDto request) {
-        timeTableDetailService.updateTimeTableDetail(request.getDetailUpdateDto());
-        courseService.updateCourse(request.getCourseUpdateDto());
+    public ResponseEntity<?> updateTimeTableDetail(@RequestBody TimeTableWithCourseUpdateDto request) {
+        timeTableDetailService.updateTimeTableDetail(request.getTableDetailDto());
+        courseService.updateCourse(request.getCourseDto());
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "timeTableDetail 수정 성공"
