@@ -38,11 +38,15 @@ public class JpaTimeTableRepository implements TimeTableRepository {
     }
 
     @Override
-    public Boolean findIsMain(Boolean isMain) {
-        return em.createQuery("select t from TimeTable t where t.isMain = :isMain", TimeTable.class)
+    public Optional<TimeTable> findIsMain(Boolean isMain) {
+        return Optional.ofNullable(em.createQuery("select t from TimeTable t where t.isMain = :isMain", TimeTable.class)
                 .setParameter("isMain", isMain)
-                .getSingleResult()
-                .getIsMain();
+                .getSingleResult());
+    }
+
+    @Override
+    public void delete(TimeTable timeTable) {
+        em.remove(timeTable);
     }
 }
 

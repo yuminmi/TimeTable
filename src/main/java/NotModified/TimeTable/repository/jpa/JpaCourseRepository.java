@@ -36,4 +36,9 @@ public class JpaCourseRepository implements CourseRepository {
         Course course = em.find(Course.class, id);
         return Optional.ofNullable(course);
     }
+
+    @Override
+    public void delete(Course course) {
+        em.remove(course);
+    }
 }

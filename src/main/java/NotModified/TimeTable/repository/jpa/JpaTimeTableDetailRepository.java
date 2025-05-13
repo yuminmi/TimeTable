@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JpaTimeTableDetailRepository implements TimeTableDetailRepository {
@@ -32,11 +34,29 @@ public class JpaTimeTableDetailRepository implements TimeTableDetailRepository {
     }
 
     @Override
+    public Optional<TimeTableDetail> findById(Long id) {
+        TimeTableDetail timeTableDetail = em.find(TimeTableDetail.class, id);
+        return Optional.ofNullable(timeTableDetail);
+    }
+
+    @Override
     public List<TimeTableDetail> findByWeekDay(Long timeTableId, int weekday) {
         return em.createQuery("select td from TimeTableDetail td " +
                                 "where td.timeTable.id = :timeTableId and td.weekday = :weekday", TimeTableDetail.class)
                 .setParameter("timeTableId", timeTableId)
                 .setParameter("weekday", weekday)
                 .getResultList();
+    }
+
+    @Override
+    public void delete(TimeTableDetail timeTableDetail) {
+        em.remove(timeTableDetail);
+    }
+
+    @Override
+    public Long findByCourseId(Long courseId) {
+        return em.createQuery("select count(td) from TimeTableDetail td where td.Course.id = :courseId", Long.class)
+                .setParameter("courseId", courseId)
+                .getSingleResult();
     }
 }
