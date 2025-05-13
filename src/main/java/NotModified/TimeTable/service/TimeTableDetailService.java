@@ -32,16 +32,16 @@ public class TimeTableDetailService {
     }
 
     // fix: 이미 등록되어 있는 경우에는 자신의 시간은 제외하고 생각해야함
-    public void TimeCheck(Long selfId, Long id, int weekday, LocalTime newStart, LocalTime newEnd) {
+    public void TimeCheck(Long selfId, Long timeTableId, int weekday, LocalTime newStart, LocalTime newEnd) {
         if(newEnd.isBefore(newStart) || newEnd.equals(newStart)) {
             throw new IllegalArgumentException("올바르지 않은 시간입니다.");
         }
 
-        List<TimeTableDetail> details = timeTableDetailRepository.findByWeekDay(id, weekday);
+        List<TimeTableDetail> details = timeTableDetailRepository.findByWeekDay(timeTableId, weekday);
 
         for(TimeTableDetail detail : details) {
             // 자기 자신은 건너뜀
-            if(detail.getId().equals(selfId)) continue;
+            if (selfId != null && detail.getId().equals(selfId)) continue;
             
             LocalTime start = detail.getStartTime();
             LocalTime end = detail.getEndTime();
@@ -58,6 +58,7 @@ public class TimeTableDetailService {
 
     // 특정 시간표(학기)에 해당하는 시간표 리스트 출력
     public List<TimeTableWithCourseResponseDto> findAllTimeTableDetails(Long timeTableId) {
+        // 현재 해당 시간표, 요일의 세부 시간표들을 list 로 가져옴
         List<TimeTableDetail> details = timeTableDetailRepository.findAll(timeTableId);
 
         // key : course, value : details
@@ -76,11 +77,8 @@ public class TimeTableDetailService {
 
     // 생성한 course_id를 리턴 : 추가 저장을 위해
     public Long saveTimeTableDetail(TimeTableDetailRequestDto dto, TimeTable timeTable, Course course) {
-        // 현재 해당 시간표, 요일의 세부 시간표들을 list 로 가져옴
-        List<TimeTableDetail> details = timeTableDetailRepository.findByWeekDay(timeTable.getId(), dto.getWeekday());
-
         // 새로 추가하는 경우, selfId 를 -1로함.
-        TimeCheck(-1L, timeTable.getId(), dto.getWeekday(), dto.getStartTime(), dto.getEndTime());
+        TimeCheck(null, timeTable.getId(), dto.getWeekday(), dto.getStartTime(), dto.getEndTime());
         
         // 겹치지 않는 경우 Entity 생성 후, 저장
         TimeTableDetail ttd = TimeTableDetail.builder()
