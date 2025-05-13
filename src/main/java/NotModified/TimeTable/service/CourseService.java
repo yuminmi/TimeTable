@@ -36,9 +36,9 @@ public class CourseService {
         Course course = findCourse(dto.getCourseId());
         
         // 강좌 정보 업데이트
-        String newTitle = course.getTitle();
-        String newInstructor = course.getInstructor();
-        String newColor = course.getColor();
+        String newTitle = dto.getTitle();
+        String newInstructor = dto.getInstructor();
+        String newColor = dto.getColor();
         
         if(newTitle != null) course.setTitle(newTitle);
         if(newInstructor != null) course.setInstructor(newInstructor);
