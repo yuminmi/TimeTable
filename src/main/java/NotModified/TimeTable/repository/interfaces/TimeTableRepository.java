@@ -11,4 +11,5 @@ public interface TimeTableRepository {
     Optional<TimeTable> findById(Long id);
     Optional<TimeTable> findIsMain(Boolean isMain);
     void delete(TimeTable timeTable);
+    List<TimeTable> findAllOrderByCreatedAt(String userId);
 }

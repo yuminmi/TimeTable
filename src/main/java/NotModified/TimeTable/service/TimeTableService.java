@@ -62,7 +62,7 @@ public class TimeTableService {
 
         if(dto.getName() != null) timeTable.setName(dto.getName());
 
-        // is_main 시간표를 수정하는 경우
+        // is_main 시간표를 수정하는 경우: 이미 존재하는 main 이 있으면 걔를 취소하고 업데이트
         if(dto.getIsMain() != null && Boolean.TRUE.equals(dto.getIsMain())) {
             Optional<TimeTable> currentMain = timeTableRepository.findIsMain(true);
             currentMain.ifPresent(main -> main.setIsMain(false));
@@ -75,6 +75,8 @@ public class TimeTableService {
     // fix: 삭제 후에 main 인 애가 없으면 얘로 업데이트
     public void deleteTimeTable(Long id) {
         TimeTable timeTable = findTimeTable(id);
+        String userId = timeTable.getUserId();
+        boolean wasMain = Boolean.TRUE.equals(timeTable.getIsMain());
 
         // 해당 시간표에 속한 세부 시간표 목록 가져오기
         List<TimeTableDetail> details = timeTableDetailService.findAllTImeTableDetails(id);
@@ -87,10 +89,16 @@ public class TimeTableService {
 
         timeTableRepository.delete(timeTable);
 
+        if(wasMain) {
+            List<TimeTable> remaining = timeTableRepository.findAllOrderByCreatedAt(userId);
+            if(!remaining.isEmpty()){
+                TimeTable newest = remaining.get(0);
+                newest.setIsMain(true);
+            }
+        }
+
         for(Long courseId : courseIds) {
             courseService.deleteCourse(courseId);
         }
-
-
     }
 }
