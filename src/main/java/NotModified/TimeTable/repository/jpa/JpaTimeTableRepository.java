@@ -49,5 +49,12 @@ public class JpaTimeTableRepository implements TimeTableRepository {
     public void delete(TimeTable timeTable) {
         em.remove(timeTable);
     }
+
+    @Override
+    public List<TimeTable> findAllOrderByCreatedAt(String userId) {
+        return em.createQuery("select t from TimeTable t where t.userId = :userId order by t.createdAt desc", TimeTable.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 }
 
