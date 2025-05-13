@@ -9,5 +9,6 @@ public interface TimeTableRepository {
     TimeTable save(TimeTable timeTable);
     List<TimeTable> findAll(String userId);
     Optional<TimeTable> findById(Long id);
-    Boolean findIsMain(Boolean isMain);
+    Optional<TimeTable> findIsMain(Boolean isMain);
+    void delete(TimeTable timeTable);
 }

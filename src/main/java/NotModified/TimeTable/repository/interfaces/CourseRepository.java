@@ -9,4 +9,5 @@ public interface CourseRepository {
     Course save(Course course);
     List<Course> findAll(String userId);
     Optional<Course> findById(Long id);
+    void delete(Course course);
 }
