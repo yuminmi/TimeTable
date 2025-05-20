@@ -1,6 +1,7 @@
 import styles from "./TimeTable.module.css";
+import StarIcon from "./StarIcon";
 
-export default function TimeTable({timeItem}) {
+export default function TimeTable({curTable, timeItem, updateIsMain}) {
     function parseTimeToFloat(timeStr) {
         const [h, m] = timeStr.split(":").map(str => parseInt(str, 10)); // 9:30 형식을 10진수로 h=9, m=30저장
         return h + (m/60); // 9 + 30/60 = 9+0.5 => 시간 단위로 계산
@@ -9,8 +10,10 @@ export default function TimeTable({timeItem}) {
     return (
         <div className={styles.tableBlock}>
             <div className={styles.tableHeader}>
-                <h2>Time-Table</h2>
+                <h2>{curTable.name}</h2>
                 <p>2025.03.03 ~ 2025.06.23</p>
+                <StarIcon isMain={curTable.isMain} updateIsMain={updateIsMain}></StarIcon>
+
             </div>
             <div className={styles.timetableGrid}>
                 <div className={styles.cell}></div>

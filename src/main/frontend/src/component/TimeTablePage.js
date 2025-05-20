@@ -8,29 +8,39 @@ import axios from "axios";
 
 export default function TimeTablePage() {
     const [userName, setUserName] = useState("");
-    const [selectedTable, setSelectiveTable] = useState({id: "", name: ""});
+    const [selectedTable, setSelectiveTable] = useState({id: "", name: "", isMain: ""});
+    // 시간표 선택
     const changeTable = (table) => {
-        setSelectiveTable({id: table.id, name: table.name});
+        console.log("table 클릭됨: ", table);
+        setSelectiveTable({id: table.id, name: table.name, isMain: table.isMain});
     }
     const [tableList, setTableList] = useState([]);
     const [timeItem, setTimeItem] = useState([]);
     useEffect(() => {
         if(!userName) return;
-
+        console.log("userName:", userName);
         const fetchTimeTable = async () => {
             try {
                 const response = await axios.get('/api/timetable/' + userName);
-                setTableList(Array.isArray(response.data) ? response.data : [response.data]);
+                setTableList(response.data.data);
+                console.log(response.data.message);
             } catch (e) {
                 console.error("fail fetch: ", e);
             }
         };
-        /* const fetchTimeItem = async () => {
+        const fetchTimeItem = async () => {
             try {
-                const timeItemRes = await axios.get('/api/')
+                const timeItemRes = await axios.get('/api/timetable/detail/' + userName);
+                setTimeItem(timeItemRes.data.data);
+                console.log(timeItemRes.data.message);
+            } catch (e) {
+                console.error("fail fetch: ", e);
             }
-        }*/
+        }
             fetchTimeTable();
+            fetchTimeItem();
+            console.log("semester: ", tableList);
+            console.log("timeitem: ", timeItem);
     }, [userName]);
 
     /* 시간표 추가 버튼 */
@@ -44,17 +54,17 @@ export default function TimeTablePage() {
     const openSubModal = () => setIsSubModalOpen(true);
     const closeSubModal = () => setIsSubModalOpen(false);
 
+    // 시간표 추가
     const handleAddTable = (newTableName) => {
         console.log("전달받은 테이블 이름:", newTableName, typeof newTableName);
-
+        console.log("유저이름", userName);
         const fetchTimeTable = async () => {
             try {
                 const response = await axios.post('/api/timetable', {
                     userId: userName,
-                    name: newTableName,
-                    isMain: true
+                    name: newTableName
                 });
-                console.log("서버 응답:", response.data);
+                console.log("서버 응답:", response.data.message);
                 alert("semester 저장 완료");
             } catch (e) {
                 console.error("fail fetch: ", e);
@@ -64,10 +74,33 @@ export default function TimeTablePage() {
         fetchTimeTable();
     }
 
+    // 시간표 수정(isMain 변경)
+    const updateIsMain = (newIsMain) => {
+        if (!userName) return; // userName이 없으면 요청 막기
+
+        console.log("기존 isMain: ", selectedTable.isMain, " -> 새 isMain값: ", newIsMain);
+        const fetchUpdateIsMain = async () => {
+            try {
+                const updateRes = await axios.put('/api/timetable/' + selectedTable.id, {
+                    timeTableDto: {
+                        name: selectedTable.name,
+                        isMain: newIsMain
+                    }
+                });
+                console.log("시간표 isMain 수정: ", updateRes.data.message);
+                setSelectiveTable((prev) => ({...prev, isMain: newIsMain}));
+            } catch (e) {
+                console.error("fail fetch: ", e);
+            }
+        }
+        fetchUpdateIsMain();
+        alert("설정 완료");
+    };
+    // 세부 시간표 등록
     const handleAddItem = (newItem) => {
         const fetchTimeTableDetail = async () => {
                 try {
-                    const courseRes = await axios.post('/api/timetable/detail', {
+                    const courseRes = await axios.post('/api/timetable/course', {
                         courseDto: {
                              userId: userName,
                              title: newItem.subject,
@@ -76,7 +109,7 @@ export default function TimeTablePage() {
                         }
                     });
 
-                    const course_id = courseRes.data;
+                    const course_id = courseRes.data.data;
 
                     for(const time of newItem.times){
                         const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(time.day);
@@ -111,11 +144,11 @@ export default function TimeTablePage() {
             </div>
             <SemesterList semesterList={tableList} changeTable={changeTable} />
             <AddTable isOpen={isTableModalOpen} closeModal={closeTableModal} onAdd={handleAddTable}/>
-            <SubjectList />
+            <SubjectList subjectList={timeItem}/>
             <div>
             <button onClick={openSubModal}>+</button> // subject 추가버튼
             </div>
-            <TimeTable timeItem={timeItem}/>
+            <TimeTable curTable={selectedTable} timeItem={timeItem} updateIsMain={updateIsMain}/>
             <AddTimeTable isOpen={isSubModalOpen} closeModal={closeSubModal} onAdd={handleAddItem}/>
         </div>
     );
