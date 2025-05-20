@@ -8,9 +8,9 @@ import axios from "axios";
 
 export default function TimeTablePage() {
     const [userName, setUserName] = useState("");
-    const [selectedTable, setSelectiveTable] = useState({id: "", name: ""});
+    const [selectedTable, setSelectiveTable] = useState({id: "", name: "", isMain: ""});
     const changeTable = (table) => {
-        setSelectiveTable({id: table.id, name: table.name});
+        setSelectiveTable({id: table.id, name: table.name, isMain: table.isMain});
     }
     const [tableList, setTableList] = useState([]);
     const [timeItem, setTimeItem] = useState([]);
@@ -20,17 +20,25 @@ export default function TimeTablePage() {
         const fetchTimeTable = async () => {
             try {
                 const response = await axios.get('/api/timetable/' + userName);
-                setTableList(Array.isArray(response.data) ? response.data : [response.data]);
+                setTableList(response.data.data);
+                console.log(response.data.message);
             } catch (e) {
                 console.error("fail fetch: ", e);
             }
         };
-        /* const fetchTimeItem = async () => {
+        const fetchTimeItem = async () => {
             try {
-                const timeItemRes = await axios.get('/api/')
+                const timeItemRes = await axios.get('/api/timetable/detail/' + userName);
+                setTimeItem(timeItemRes.data.data);
+                console.log(timeItemRes.data.message);
+            } catch (e) {
+                console.error("fail fetch: ", e);
             }
-        }*/
+        }
             fetchTimeTable();
+            fetchTimeItem();
+            console.log("semester: ", tableList);
+            console.log("timeitem: ", timeItem);
     }, [userName]);
 
     /* 시간표 추가 버튼 */
@@ -46,15 +54,14 @@ export default function TimeTablePage() {
 
     const handleAddTable = (newTableName) => {
         console.log("전달받은 테이블 이름:", newTableName, typeof newTableName);
-
+        console.log("유저이름", userName);
         const fetchTimeTable = async () => {
             try {
                 const response = await axios.post('/api/timetable', {
                     userId: userName,
-                    name: newTableName,
-                    isMain: true
+                    name: newTableName
                 });
-                console.log("서버 응답:", response.data);
+                console.log("서버 응답:", response.data.message);
                 alert("semester 저장 완료");
             } catch (e) {
                 console.error("fail fetch: ", e);
@@ -111,7 +118,7 @@ export default function TimeTablePage() {
             </div>
             <SemesterList semesterList={tableList} changeTable={changeTable} />
             <AddTable isOpen={isTableModalOpen} closeModal={closeTableModal} onAdd={handleAddTable}/>
-            <SubjectList />
+            <SubjectList subjectList={timeItem}/>
             <div>
             <button onClick={openSubModal}>+</button> // subject 추가버튼
             </div>
