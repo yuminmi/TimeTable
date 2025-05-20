@@ -76,7 +76,7 @@ public class TimeTableService {
     public void deleteTimeTable(Long id) {
         TimeTable timeTable = findTimeTable(id);
         String userId = timeTable.getUserId();
-        boolean wasMain = Boolean.TRUE.equals(timeTable.getIsMain());
+        boolean wasMain = timeTable.getIsMain();
 
         // 해당 시간표에 속한 세부 시간표 목록 가져오기
         List<TimeTableDetail> details = timeTableDetailRepository.findAll(id);
@@ -91,7 +91,7 @@ public class TimeTableService {
 
         if(wasMain) {
             List<TimeTable> remaining = timeTableRepository.findAllOrderByCreatedAt(userId);
-            if(!remaining.isEmpty()){
+            if(remaining != null && !remaining.isEmpty()){
                 TimeTable newest = remaining.get(0);
                 newest.setIsMain(true);
             }
