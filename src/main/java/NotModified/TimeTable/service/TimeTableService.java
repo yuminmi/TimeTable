@@ -1,10 +1,13 @@
 package NotModified.TimeTable.service;
 
+import NotModified.TimeTable.domain.Course;
 import NotModified.TimeTable.domain.TimeTable;
 import NotModified.TimeTable.domain.TimeTableDetail;
 import NotModified.TimeTable.dto.timeTable.TimeTableRequestDto;
 import NotModified.TimeTable.dto.timeTable.TimeTableResponseDto;
 import NotModified.TimeTable.dto.timeTable.TimeTableUpdateDto;
+import NotModified.TimeTable.repository.interfaces.CourseRepository;
+import NotModified.TimeTable.repository.interfaces.TimeTableDetailRepository;
 import NotModified.TimeTable.repository.interfaces.TimeTableRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TimeTableService {
     private final TimeTableRepository timeTableRepository;
-    private final TimeTableDetailService timeTableDetailService;
-    private final CourseService courseService;
+    private final TimeTableDetailRepository timeTableDetailRepository;
+    private final CourseRepository courseRepository;
 
     // 특정 id에 해당하는 시간표 리턴
     public TimeTable findTimeTable(Long id) {
@@ -35,14 +38,11 @@ public class TimeTableService {
         TimeTable timeTable = TimeTable.builder()
                 .userId(dto.getUserId())
                 .name(dto.getName())
-                .isMain(dto.getIsMain())
                 .build();
 
         // isMain이 존재하는지 먼저 확인하고, 없으면 지금 추가하는 걸 isMain으로 설정
-        Optional<TimeTable> isMainExist = timeTableRepository.findIsMain(true);
-        if (isMainExist.isEmpty()) {
-            timeTable.setIsMain(true);
-        }
+        boolean exists = timeTableRepository.findIsMain(true, dto.getUserId()).isPresent();
+        timeTable.setIsMain(!exists);
 
         timeTableRepository.save(timeTable);
     }
@@ -64,7 +64,7 @@ public class TimeTableService {
 
         // is_main 시간표를 수정하는 경우: 이미 존재하는 main 이 있으면 걔를 취소하고 업데이트
         if(dto.getIsMain() != null && Boolean.TRUE.equals(dto.getIsMain())) {
-            Optional<TimeTable> currentMain = timeTableRepository.findIsMain(true);
+            Optional<TimeTable> currentMain = timeTableRepository.findIsMain(true, timeTable.getUserId());
             currentMain.ifPresent(main -> main.setIsMain(false));
             timeTable.setIsMain(true);
         }
@@ -79,7 +79,7 @@ public class TimeTableService {
         boolean wasMain = Boolean.TRUE.equals(timeTable.getIsMain());
 
         // 해당 시간표에 속한 세부 시간표 목록 가져오기
-        List<TimeTableDetail> details = timeTableDetailService.findAllTImeTableDetails(id);
+        List<TimeTableDetail> details = timeTableDetailRepository.findAll(id);
         
         // 세부 시간표가 속한 courses 가져오기
         // set: distinct 하게 가져옴
@@ -98,7 +98,9 @@ public class TimeTableService {
         }
 
         for(Long courseId : courseIds) {
-            courseService.deleteCourse(courseId);
+            Course course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강좌입니다."));
+            courseRepository.delete(course);
         }
     }
 }
