@@ -10,6 +10,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -39,4 +41,7 @@ public class TimeTable {
 
     @Column(name = "is_main")
     private Boolean isMain;
+
+    @OneToMany(mappedBy = "timeTable", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TimeTableDetail> details = new ArrayList<>();
 }
