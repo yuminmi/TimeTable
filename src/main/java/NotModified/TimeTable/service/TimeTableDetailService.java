@@ -9,7 +9,9 @@ import NotModified.TimeTable.dto.timeTableDetail.TimeTableDetailRequestDto;
 import NotModified.TimeTable.dto.timeTableDetail.TimeTableDetailResponseDto;
 import NotModified.TimeTable.dto.timeTableDetail.TimeTableDetailUpdateDto;
 import NotModified.TimeTable.dto.timeTableWithCourse.TimeTableWithCourseResponseDto;
+import NotModified.TimeTable.repository.interfaces.CourseRepository;
 import NotModified.TimeTable.repository.interfaces.TimeTableDetailRepository;
+import NotModified.TimeTable.repository.interfaces.TimeTableRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 
 public class TimeTableDetailService {
     private final TimeTableDetailRepository timeTableDetailRepository;
+    private final TimeTableRepository timeTableRepository;
+    private final CourseRepository courseRepository;
 
     public TimeTableDetail findTimeTableDetail(Long id) {
         return timeTableDetailRepository.findById(id)
@@ -76,10 +80,15 @@ public class TimeTableDetailService {
     }
 
     // 생성한 course_id를 리턴 : 추가 저장을 위해
-    public Long saveTimeTableDetail(TimeTableDetailRequestDto dto, TimeTable timeTable, Course course) {
+    public Long saveTimeTableDetail(TimeTableDetailRequestDto dto) {
         // 새로 추가하는 경우, selfId 를 -1로함.
-        TimeCheck(null, timeTable.getId(), dto.getWeekday(), dto.getStartTime(), dto.getEndTime());
-        
+        TimeCheck(null, dto.getTimeTableId(), dto.getWeekday(), dto.getStartTime(), dto.getEndTime());
+
+        TimeTable timeTable = timeTableRepository.findById(dto.getTimeTableId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간표입니다."));
+        Course course = courseRepository.findById(dto.getCourseId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강좌입니다."));
+
         // 겹치지 않는 경우 Entity 생성 후, 저장
         TimeTableDetail ttd = TimeTableDetail.builder()
                 .timeTable(timeTable)

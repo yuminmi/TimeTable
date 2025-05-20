@@ -9,7 +9,7 @@ public interface TimeTableRepository {
     TimeTable save(TimeTable timeTable);
     List<TimeTable> findAll(String userId);
     Optional<TimeTable> findById(Long id);
-    Optional<TimeTable> findIsMain(Boolean isMain);
+    Optional<TimeTable> findIsMain(Boolean isMain, String userId);
     void delete(TimeTable timeTable);
     List<TimeTable> findAllOrderByCreatedAt(String userId);
 }

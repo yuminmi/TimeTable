@@ -2,8 +2,10 @@ package NotModified.TimeTable.controller;
 
 import NotModified.TimeTable.domain.Course;
 import NotModified.TimeTable.domain.TimeTable;
+import NotModified.TimeTable.dto.course.CourseRequestDto;
 import NotModified.TimeTable.dto.timeTable.TimeTableRequestDto;
 import NotModified.TimeTable.dto.timeTable.TimeTableUpdateDto;
+import NotModified.TimeTable.dto.timeTableDetail.TimeTableDetailRequestDto;
 import NotModified.TimeTable.dto.timeTableWithCourse.TimeTableWithCourseRequestDto;
 import NotModified.TimeTable.dto.timeTableWithCourse.TimeTableWithCourseUpdateDto;
 import NotModified.TimeTable.service.CourseService;
@@ -67,21 +69,20 @@ public class TimeTableApiController {
         ));
     }
 
+    @PostMapping("/timetable/course")
+    public ResponseEntity<?> createCourse(@RequestBody CourseRequestDto request) {
+        Long courseId = courseService.saveCourse(request);
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Course 등록 성공",
+                "data", courseId
+        ));
+    }
+
     // 세부 시간표 등록
     @PostMapping("/timetable/detail")
-    public ResponseEntity<?> createTimeTableDetail(@RequestBody TimeTableWithCourseRequestDto request) {
-        Long timeTableId = request.getTableDetailDto().getTimeTableId();
-        Long courseId = request.getTableDetailDto().getCourseId();
-
-        // 새로운 강좌를 등록하는 경우
-        if(courseId == null) {
-            courseId = courseService.saveCourse(request.getCourseDto());
-        }
-        Course course = courseService.findCourse(courseId);
-        TimeTable timeTable = timeTableService.findTimeTable(timeTableId);
-
-        timeTableDetailService.saveTimeTableDetail(request.getTableDetailDto(), timeTable, course);
-
+    public ResponseEntity<?> createTimeTableDetail(@RequestBody TimeTableDetailRequestDto request) {
+        timeTableDetailService.saveTimeTableDetail(request);
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "timeTableDetail 생성 성공"
