@@ -115,6 +115,7 @@ export default function TimeTablePage() {
                         const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(time.day);
                         const response = await axios.post('/api/timetable/detail', {
                                                 tableDetailDto: {
+                                                    userId: userName,
                                                     courseId: course_id,
                                                     timeTableId: selectedTable.id,
                                                     weekday: dayIndex,
