@@ -82,10 +82,8 @@ export default function TimeTablePage() {
         const fetchUpdateIsMain = async () => {
             try {
                 const updateRes = await axios.put('/api/timetable/' + selectedTable.id, {
-                    timeTableDto: {
-                        name: selectedTable.name,
-                        isMain: newIsMain
-                    }
+                    name: selectedTable.name,
+                    isMain: newIsMain
                 });
                 console.log("시간표 isMain 수정: ", updateRes.data.message);
                 setSelectiveTable((prev) => ({...prev, isMain: newIsMain}));
@@ -101,12 +99,10 @@ export default function TimeTablePage() {
         const fetchTimeTableDetail = async () => {
                 try {
                     const courseRes = await axios.post('/api/timetable/course', {
-                        courseDto: {
-                             userId: userName,
-                             title: newItem.subject,
-                             instructor: newItem.instructor,
-                             color: "#add8e6"
-                        }
+                        userId: userName,
+                        title: newItem.subject,
+                        instructor: newItem.instructor,
+                        color: "#add8e6"
                     });
 
                     const course_id = courseRes.data.data;
@@ -114,16 +110,14 @@ export default function TimeTablePage() {
                     for(const time of newItem.times){
                         const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(time.day);
                         const response = await axios.post('/api/timetable/detail', {
-                                                tableDetailDto: {
-                                                    userId: userName,
-                                                    courseId: course_id,
-                                                    timeTableId: selectedTable.id,
-                                                    weekday: dayIndex,
-                                                    location: time.loca,
-                                                    startTime: time.startTime,
-                                                    endTime: time.endTime
-                                                }
-                                            });
+                            userId: userName,
+                            courseId: course_id,
+                            timeTableId: selectedTable.id,
+                            weekday: dayIndex,
+                            location: time.loca,
+                            startTime: time.startTime,
+                            endTime: time.endTime
+                        });
                         console.log("시간 블록 저장 응답:", response.data);
                     }
                     alert("시간표 저장 완료");
