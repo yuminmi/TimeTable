@@ -19,6 +19,7 @@ export default function TimeTablePage() {
     useEffect(() => {
         if(!userName) return;
         console.log("userName:", userName);
+        // 테이블 리스트 조회
         const fetchTimeTable = async () => {
             try {
                 const response = await axios.get('/api/timetable/' + userName);
@@ -28,20 +29,25 @@ export default function TimeTablePage() {
                 console.error("fail fetch: ", e);
             }
         };
+            fetchTimeTable();
+            console.log("semester: ", tableList);
+    }, [userName]);
+    useEffect(()=> {
+        if(!userName || !selectedTable) return;
+        console.log("userName:", userName, "선택된 테이블: ", selectedTable);
+        // 세부 시간표 리스트 조회
         const fetchTimeItem = async () => {
             try {
-                const timeItemRes = await axios.get('/api/timetable/detail/' + userName);
+                const timeItemRes = await axios.get('/api/timetable/detail/' + selectedTable.id);
                 setTimeItem(timeItemRes.data.data);
                 console.log(timeItemRes.data.message);
             } catch (e) {
                 console.error("fail fetch: ", e);
             }
-        }
-            fetchTimeTable();
-            fetchTimeItem();
-            console.log("semester: ", tableList);
-            console.log("timeitem: ", timeItem);
-    }, [userName]);
+        };
+        fetchTimeItem();
+        console.log("timeitem: ", timeItem);
+    }, [selectedTable]);
 
     /* 시간표 추가 버튼 */
     const [isTableModalOpen, setIsTableModalOpen] = useState(false);
@@ -65,6 +71,9 @@ export default function TimeTablePage() {
                     name: newTableName
                 });
                 console.log("서버 응답:", response.data.message);
+                if(response.data.success === true) {
+
+                }
                 alert("semester 저장 완료");
             } catch (e) {
                 console.error("fail fetch: ", e);
@@ -133,11 +142,13 @@ export default function TimeTablePage() {
 
     return (
         <div style={{display:"flex", padding:"210px"}}>
-            <input type="text"  onChange={(e) => setUserName(e.target.value)} />
+            <input type="text"  onChange={(e) => {
+                setUserName(e.target.value);
+            }} />
             <div>
             <button onClick={openTableModal}>+</button> // semester 추가버튼
             </div>
-            <SemesterList semesterList={tableList} changeTable={changeTable} />
+            <SemesterList semesterList={tableList} changeTable={changeTable}/>
             <AddTable isOpen={isTableModalOpen} closeModal={closeTableModal} onAdd={handleAddTable}/>
             <SubjectList subjectList={timeItem}/>
             <div>

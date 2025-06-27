@@ -22,9 +22,10 @@ export default function AddTimeTable ({isOpen, closeModal, onAdd}) {
             instructor: form.instructor,
             times: form.times
         }
-        event.preventDefault();
 
         onAdd(newItem);
+        setForm({subject: "", instructor: "", times: []});
+        setTimeInput({day: "", startTime: "", endTime: "", loca:""});
     }
     return (
         <div style={{display:isOpen?"block": "none",

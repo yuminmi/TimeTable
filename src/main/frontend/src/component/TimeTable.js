@@ -36,16 +36,16 @@ export default function TimeTable({curTable, timeItem, updateIsMain}) {
                       ))}
                     </>
                 ))}
-                {timeItem.map((item) =>
-                 item.times.map((time, index) => {
-                    const dayIndex = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(time.day);
+                {timeItem?.map((item) =>
+                 item.details?.map((time, index) => {
+                    const dayIndex = time.weekday;
                     const startTime = parseTimeToFloat(time.startTime);
                     const endTime = parseTimeToFloat(time.endTime);
                     const HEADER_HEIGHT = 50; // dayIndex 한 줄의 height
                     const CELL_HEIGHT = 50; // cell 한 칸당 height
                     const top = HEADER_HEIGHT + (startTime - 9) * CELL_HEIGHT; // 9시부터 시작이니까 0으로 시작
                     const height = (endTime - startTime) * 50;
-                    return <div key={`${item.subject}-${index}`}
+                    return <div key={`${item.title}-${index}`}
                          className={styles.timeBlock}
                          style={{
                             top:`${top}px`,
@@ -61,7 +61,7 @@ export default function TimeTable({curTable, timeItem, updateIsMain}) {
                          }}
                     >
                     {console.log(item)}
-                        {item.subject}<br/>{item.instructor}<br/>{time.loca}
+                        {item.title}<br/>{item.instructor}<br/>{time.location}
                     </div>
                  }))}
             </div>
