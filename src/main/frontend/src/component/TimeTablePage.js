@@ -71,10 +71,9 @@ export default function TimeTablePage() {
                     name: newTableName
                 });
                 console.log("서버 응답:", response.data.message);
-                if(response.data.success === true) {
-
+                if(response.data.success) {
+                    alert("semester 저장 완료");
                 }
-                alert("semester 저장 완료");
             } catch (e) {
                 console.error("fail fetch: ", e);
                 alert("semester 저장 실패");
@@ -111,7 +110,7 @@ export default function TimeTablePage() {
                         userId: userName,
                         title: newItem.subject,
                         instructor: newItem.instructor,
-                        color: "#add8e6"
+                        color: newItem.color
                     });
 
                     const course_id = courseRes.data.data;
