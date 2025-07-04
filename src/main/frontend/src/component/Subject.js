@@ -21,13 +21,13 @@ export default function Subject({subject: s}) {
 
     }
      */
-    // timetabledetail 삭제
+    /*
+    // course 삭제
     const del = async (e) => {
         e.stopPropagation();
         if(!window.confirm('subject를 삭제하시겠습니까?')) return;
         try {
-            console.log(s);
-            const response = await axios.delete(`/api/timetable/detail/${subject.courseId}`);
+            const response = await axios.delete(`/api/timetable/detail/${subject.details.courseId}`);
             if (response.data.success) {
                 setSubject({id: 0});
                 setIsDropdownOpen(false);
@@ -42,6 +42,7 @@ export default function Subject({subject: s}) {
     if(subject.id === 0) {
         return null;
     }
+     */
     return (
         <div className={styles.L_listItem}>
             <div className={styles.L_flag}/>
@@ -51,7 +52,7 @@ export default function Subject({subject: s}) {
                 {isDropdownOpen && (
                     <div className={styles.L_dropdown}>
                         <div className={styles.L_dropdownItem} onClick={toggleUpdate}>수정</div>
-                        <div className={styles.L_dropdownItem} onClick={del}>삭제</div>
+                        <div className={styles.L_dropdownItem} >삭제</div>
                     </div>
                 )}
             </div>

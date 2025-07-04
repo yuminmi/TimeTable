@@ -153,7 +153,7 @@ export default function TimeTablePage() {
             <div>
             <button onClick={openSubModal}>+</button> // subject 추가버튼
             </div>
-            <TimeTable curTable={selectedTable} timeItem={timeItem} updateIsMain={updateIsMain}/>
+            <TimeTable curTable={selectedTable} timeItem={timeItem} updateIsMain={updateIsMain} setTimeItem={setTimeItem}/>
             <AddTimeTable isOpen={isSubModalOpen} closeModal={closeSubModal} onAdd={handleAddItem}/>
         </div>
     );

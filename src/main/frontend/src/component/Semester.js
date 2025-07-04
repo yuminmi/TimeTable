@@ -32,7 +32,7 @@ export default function Semester({semester: s, onClick}) {
     }
     return (
         <div className={styles.L_listItem} onClick={onClick}>
-            <div className={styles.L_flag}/>
+            <div className={styles.L_flag} />
             <div className={styles.L_title}>{semester.name}</div>
             <div className={styles.L_menu} onClick={toggleDropdown}>
                 <img style={{height: "15px"}} src={"/menu.png"} alt={"menu"}/>
