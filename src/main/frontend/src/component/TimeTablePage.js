@@ -150,7 +150,7 @@ export default function TimeTablePage() {
             <div>
             <button onClick={openTableModal}>+</button> // semester 추가버튼
             </div>
-            <SemesterList semesterList={tableList} changeTable={changeTable}/>
+            <SemesterList semesterList={tableList} changeTable={changeTable} fetchTable={fetchTimeTable}/>
             <AddTable isOpen={isTableModalOpen} closeModal={closeTableModal} onAdd={handleAddTable}/>
             <SubjectList subjectList={timeItem}/>
             <div>
