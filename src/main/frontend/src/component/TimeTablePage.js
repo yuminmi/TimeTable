@@ -16,22 +16,24 @@ export default function TimeTablePage() {
     }
     const [tableList, setTableList] = useState([]);
     const [timeItem, setTimeItem] = useState([]);
+
+    // 테이블 리스트 조회
+    const fetchTimeTable = async () => {
+        try {
+            const response = await axios.get('/api/timetable/' + userName);
+            setTableList(response.data.data);
+            console.log(response.data.message);
+        } catch (e) {
+            console.error("fail fetch: ", e);
+        }
+    };
     useEffect(() => {
         if(!userName) return;
         console.log("userName:", userName);
-        // 테이블 리스트 조회
-        const fetchTimeTable = async () => {
-            try {
-                const response = await axios.get('/api/timetable/' + userName);
-                setTableList(response.data.data);
-                console.log(response.data.message);
-            } catch (e) {
-                console.error("fail fetch: ", e);
-            }
-        };
             fetchTimeTable();
             console.log("semester: ", tableList);
     }, [userName]);
+
     useEffect(()=> {
         if(!userName || !selectedTable) return;
         console.log("userName:", userName, "선택된 테이블: ", selectedTable);
@@ -64,7 +66,7 @@ export default function TimeTablePage() {
     const handleAddTable = (newTableName) => {
         console.log("전달받은 테이블 이름:", newTableName, typeof newTableName);
         console.log("유저이름", userName);
-        const fetchTimeTable = async () => {
+        const AddTimeTable = async () => {
             try {
                 const response = await axios.post('/api/timetable', {
                     userId: userName,
@@ -79,7 +81,7 @@ export default function TimeTablePage() {
                 alert("semester 저장 실패");
             }
         };
-        fetchTimeTable();
+        AddTimeTable();
     }
 
     // 시간표 수정(isMain 변경)
@@ -95,6 +97,7 @@ export default function TimeTablePage() {
                 });
                 console.log("시간표 isMain 수정: ", updateRes.data.message);
                 setSelectiveTable((prev) => ({...prev, isMain: newIsMain}));
+                fetchTimeTable();
             } catch (e) {
                 console.error("fail fetch: ", e);
             }
