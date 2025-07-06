@@ -25,7 +25,10 @@ export default function TimeTable({curTable, timeItem, updateIsMain, setTimeItem
         setUpdateTime(time);
         setIsUpdateOpen(true);
     };
-    const closeUpdateModal = () => setIsUpdateOpen(false);
+    const closeUpdateModal = () => {
+        setIsUpdateOpen(false);
+        setDropdownOpenKey(false);
+    };
 
     // timetabledetail 삭제 버튼
     const del = async (e, deletedItem, time) => {
@@ -62,13 +65,13 @@ export default function TimeTable({curTable, timeItem, updateIsMain, setTimeItem
             </div>
             <div className={styles.timetableGrid}>
                 <div className={styles.cell}></div>
-                <div className={styles.cell}>Mon</div>
-                <div className={styles.cell}>Tue</div>
-                <div className={styles.cell}>Wed</div>
-                <div className={styles.cell}>Thu</div>
-                <div className={styles.cell}>Fri</div>
-                <div className={styles.cell}>Sat</div>
-                <div className={styles.cell}>Sun</div>
+                <div className={styles.cell} key={"Mon"}>Mon</div>
+                <div className={styles.cell} key={"Tue"}>Tue</div>
+                <div className={styles.cell} key={"Wed"}>Wed</div>
+                <div className={styles.cell} key={"Thu"}>Thu</div>
+                <div className={styles.cell} key={"Fri"}>Fri</div>
+                <div className={styles.cell} key={"Sat"}>Sat</div>
+                <div className={styles.cell} key={"Sun"}>Sun</div>
                 {[...Array(16)].map((_, rowIdx) => (
                     <>
                       <div className={styles.timeCell}>
@@ -98,9 +101,9 @@ export default function TimeTable({curTable, timeItem, updateIsMain, setTimeItem
                     const top = HEADER_HEIGHT + (startTime - 9) * CELL_HEIGHT; // 9시부터 시작이니까 0으로 시작
                     const height = (endTime - startTime) * 50;
 
-                    const dropdownKey = `${item.id}-${time.id ?? index}`;
+                    const dropdownKey = `${item.courseId}-${time.id ?? index}`;
 
-                    return <div key={`${item.title}-${index}`}
+                    return <div key={`${item.courseId}-${time.id}`}
                          className={styles.timeBlock}
                          style={{
                             top:`${top}px`,
@@ -129,12 +132,15 @@ export default function TimeTable({curTable, timeItem, updateIsMain, setTimeItem
                                 setTimeItem((prev) =>
                                     prev.map((ii) =>
                                         ii.courseId === updatedItem.courseId ? {
-                                        ...updatedItem,
+                                        ...ii,
+                                            title: updatedItem.title,
+                                            instructor: updatedItem.instructor,
+                                            color: updatedItem.color,
                                             details: ii.details.map((tt) =>
                                                 tt.id === updatedTime.id ? updatedTime : tt
                                             )
                                         }
-                                        : item
+                                        : ii
                                     )
                                 );
                             }}/>

@@ -29,7 +29,7 @@ export default function UpdateTime ({isOpen, closeModal, item: i, time: t, onUpd
                 });
                 if(response.data.success){
                     console.log(response.data.message);
-                    onUpdated?.(item, time);
+                    onUpdated(item, time);
                     alert('수정되었습니다.');
                     closeModal();
                 }

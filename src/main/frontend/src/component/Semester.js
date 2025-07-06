@@ -13,7 +13,6 @@ export default function Semester({semester: s, onClick}) {
         if (!window.confirm('table을 삭제하시겠습니까?')) return;
         try {
             const response = await axios.delete(`/api/timetable/${semester.id}`);
-
             if(response.data.success) {
                 setSemester({id: 0});
                 setIsDropdownOpen(false);
@@ -38,7 +37,7 @@ export default function Semester({semester: s, onClick}) {
                 <img style={{height: "15px"}} src={"/menu.png"} alt={"menu"}/>
                 {isDropdownOpen && (
                     <div className={styles.L_dropdown}>
-                        <div className={styles.L_dropdownItem}>수정</div>
+                        <div className={styles.L_dropdownItem} >수정</div>
                         <div className={styles.L_dropdownItem} onClick={del}>삭제</div>
                     </div>
                 )}
